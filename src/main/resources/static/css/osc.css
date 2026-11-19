@@ -166,6 +166,12 @@ button:disabled {
     border-color: var(--border-light);
 }
 
+.btn-danger-delete {
+    background: #ef4444;
+    color: #cbdcd3;
+    /*border-color: var(--primary);*/
+}
+
 .btn-danger {
     color: var(--red);
 }

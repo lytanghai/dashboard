@@ -244,7 +244,7 @@ function createGoalCard(goal) {
             <button
                 class="btn btn-primary"
                 onclick="openDepositModal(${Number(goal.id)})">
-                ＋ Deposit
+                ➕ Deposit
             </button>
           `
         : `
@@ -255,9 +255,9 @@ function createGoalCard(goal) {
     const cancelButton = status === "IN_PROGRESS"
         ? `
         <button
-                class="btn btn-primary"
+                class="btn btn-danger-delete"
                 onclick="openCancelModal(${Number(goal.id)})">
-                - Delete
+                🗑️ Delete
             </button>
       `
         : "";
