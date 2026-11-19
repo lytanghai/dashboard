@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Step Closer</title>
+
+    <link rel="stylesheet" th:href="@{/css/osc.css}">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="brand">
+            <div class="brand-icon">↗</div>
+            <div>
+                <h1>One Step Closer</h1>
+                <p>Every little step counts.</p>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="openCreateModal">
+            <span>＋</span> New Goal
+        </button>
+    </header>
+
+    <!-- INTRO -->
+    <section class="welcome-section">
+        <div>
+            <p class="eyebrow">YOUR PERSONAL SAVINGS TRACKER</p>
+            <h2>Make your dreams <span>happen.</span></h2>
+            <p class="welcome-description">
+                Keep track of your savings and take one step closer to what you want.
+            </p>
+        </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section class="summary-grid">
+
+        <div class="summary-card total-saved">
+            <div class="summary-top">
+                <span class="summary-label">Total Saved</span>
+                <div class="summary-icon green-icon">↗</div>
+            </div>
+
+            <h2 id="totalSaved">$0.00</h2>
+            <p>Across the goals displayed</p>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-top">
+                <span class="summary-label">Active Goals</span>
+                <div class="summary-icon blue-icon">◎</div>
+            </div>
+
+            <h2 id="activeGoals">0</h2>
+            <p>Goals still in progress</p>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-top">
+                <span class="summary-label">Completed</span>
+                <div class="summary-icon purple-icon">✓</div>
+            </div>
+
+            <h2 id="completedGoals">0</h2>
+            <p>Dreams achieved</p>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-top">
+                <span class="summary-label">Progress</span>
+                <div class="summary-icon orange-icon">◷</div>
+            </div>
+
+            <h2 id="overallProgress">0%</h2>
+            <p>Saving progress</p>
+        </div>
+
+    </section>
+
+    <!-- GOALS SECTION -->
+    <section class="goals-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>My Goals</h2>
+                <p>Every goal starts with a small step.</p>
+            </div>
+        </div>
+
+        <!-- FILTER BAR -->
+        <div class="toolbar">
+
+            <div class="search-box">
+                <span class="search-icon">⌕</span>
+                <input type="text"
+                       id="searchInput"
+                       placeholder="Search your goals...">
+            </div>
+
+            <select id="statusFilter" class="filter-select">
+                <option value="">All Status</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+            </select>
+
+            <select id="sortDirection" class="filter-select">
+                <option value="DESC">Newest First</option>
+                <option value="ASC">Oldest First</option>
+            </select>
+
+        </div>
+
+        <!-- LOADING -->
+        <div id="loadingState" class="loading-state hidden">
+            <div class="loader"></div>
+            <p>Loading your goals...</p>
+        </div>
+
+        <!-- GOALS -->
+        <div id="goalsContainer" class="goals-grid"></div>
+
+        <!-- EMPTY STATE -->
+        <div id="emptyState" class="empty-state hidden">
+            <div class="empty-icon">✦</div>
+            <h3>No goals found</h3>
+            <p>Start creating your first savings goal today.</p>
+            <button class="btn btn-primary" id="emptyCreateButton">
+                ＋ Create your first goal
+            </button>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="pagination-container" id="paginationContainer">
+
+            <div class="pagination-info" id="paginationInfo">
+                Showing 0 goals
+            </div>
+
+            <div class="pagination-controls">
+                <button class="pagination-btn" id="previousPage" disabled>
+                    ← Previous
+                </button>
+
+                <span class="page-indicator" id="pageIndicator">
+                    Page 1
+                </span>
+
+                <button class="pagination-btn" id="nextPage" disabled>
+                    Next →
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<!-- ======================================
+     CREATE GOAL MODAL
+====================================== -->
+<div class="modal-overlay hidden" id="createModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <div>
+                <p class="modal-eyebrow">NEW SAVINGS GOAL</p>
+                <h2>Create a Goal</h2>
+                <p>What are you saving for?</p>
+            </div>
+
+            <button class="modal-close" data-close-modal="createModal">
+                &times;
+            </button>
+        </div>
+
+        <form id="createForm">
+
+            <div class="form-group">
+                <label for="goalTitle">Goal Title <span>*</span></label>
+                <input type="text"
+                       id="goalTitle"
+                       maxlength="100"
+                       placeholder="e.g. Buy a new laptop"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="goalDescription">Description</label>
+                <textarea id="goalDescription"
+                          rows="3"
+                          placeholder="Why is this goal important to you?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="targetAmount">Target Amount (USD) <span>*</span></label>
+                <div class="amount-input-wrapper">
+                    <span class="currency-prefix">$</span>
+                    <input type="number"
+                           id="targetAmount"
+                           min="0.01"
+                           step="0.01"
+                           placeholder="0.00"
+                           required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="goalImage">Image URL</label>
+                <input type="url"
+                       id="goalImage"
+                       placeholder="https://example.com/image.jpg">
+                <small>Optional. Add an image to personalize your goal.</small>
+            </div>
+
+            <div id="createError" class="form-error hidden"></div>
+
+            <div class="modal-actions">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-close-modal="createModal">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        id="createSubmitButton">
+                    Create Goal
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- ======================================
+     DEPOSIT MODAL
+====================================== -->
+<div class="modal-overlay hidden" id="depositModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <div>
+                <p class="modal-eyebrow">KEEP MOVING FORWARD</p>
+                <h2>Add Savings</h2>
+                <p id="depositGoalTitle">Goal</p>
+            </div>
+
+            <button class="modal-close" data-close-modal="depositModal">
+                &times;
+            </button>
+        </div>
+
+        <form id="depositForm">
+
+            <input type="hidden" id="depositGoalId">
+
+            <div class="deposit-progress">
+                <div class="deposit-progress-info">
+                    <span>Current savings</span>
+                    <strong id="depositCurrentAmount">$0.00</strong>
+                </div>
+
+                <div class="deposit-progress-info">
+                    <span>Target</span>
+                    <strong id="depositTargetAmount">$0.00</strong>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="depositCurrency">Currency</label>
+                <select id="depositCurrency">
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="KHR">KHR - Cambodian Riel</option>
+                    <option value="USDC">USDC</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="depositAmount">Deposit Amount <span>*</span></label>
+
+                <div class="amount-input-wrapper">
+                    <input type="number"
+                           id="depositAmount"
+                           min="0.01"
+                           step="0.01"
+                           placeholder="0.00"
+                           required>
+                </div>
+            </div>
+
+            <div id="depositError" class="form-error hidden"></div>
+
+            <div class="modal-actions">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-close-modal="depositModal">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        id="depositSubmitButton">
+                    Confirm Deposit
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">
+    <div class="toast-icon" id="toastIcon"></div>
+    <div class="toast-content">
+        <strong id="toastTitle">Success</strong>
+        <span id="toastMessage">Operation completed successfully.</span>
+    </div>
+    <button class="toast-close" onclick="hideToast()" aria-label="Close">
+        &times;
+    </button>
+</div>
+
+<!-- Goal Completion Celebration -->
+<div id="completionModal" class="completion-overlay">
+    <div class="completion-modal">
+        <button class="completion-close" onclick="hideCompletionModal()">
+            &times;
+        </button>
+
+        <div class="celebration-icon">🏆</div>
+
+        <div class="completion-confetti" id="completionConfetti"></div>
+
+        <span class="completion-label">GOAL COMPLETED</span>
+
+        <h2>Congratulations!</h2>
+
+        <p class="completion-message">
+            You've reached your saving goal!
+        </p>
+
+        <h3 id="completedGoalTitle">Your Goal</h3>
+
+        <div class="completion-progress">
+            <div class="completion-progress-track">
+                <div class="completion-progress-fill"></div>
+            </div>
+            <span>100% Completed</span>
+        </div>
+
+        <p class="completion-description">
+            Every step counts. You made it happen! 🎉
+        </p>
+
+        <button class="completion-button" onclick="hideCompletionModal()">
+            Awesome!
+        </button>
+    </div>
+</div>
+<script th:src="@{/js/osc.js}"></script>
+
+</body>
+</html>

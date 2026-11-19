@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dev Dashboard</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/dev_dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/fragments/save-modal.css}">
+    <link rel="stylesheet" th:href="@{/css/fragments/item_detail.css}">
+</head>
+
+<body>
+
+<main class="dashboard">
+
+    <!-- Theme Toggle -->
+    <button id="themeToggle" class="theme-toggle" type="button">
+        <span id="themeIcon">🌙</span>
+        <span id="themeLabel">Dark mode</span>
+    </button>
+
+    <!-- Search Section -->
+    <section class="search-container">
+
+        <div class="brand">
+            <div class="brand-icon">⌘</div>
+            <span>Dev Library</span>
+        </div>
+
+        <h1>What are you looking for?</h1>
+
+        <p class="subtitle">
+            Search your saved SQL queries, Java snippets,
+            API examples and development notes.
+        </p>
+
+        <button type="button" id="createItemButton" class="create-item-button">
+            <span class="plus-icon">+</span>
+            <span>New Item</span>
+        </button>
+        <br><br>
+
+
+        <!-- Search Box -->
+        <div class="search-wrapper">
+
+            <div class="search-box">
+                <span class="search-icon">⌕</span>
+
+                <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search your developer library..."
+                        autocomplete="off"
+                >
+
+                <button id="searchButton" type="button">
+                    Search
+                </button>
+            </div>
+
+            <!-- Autocomplete Dropdown -->
+            <div id="suggestionList" class="suggestion-list">
+                <div id="suggestionResults"></div>
+
+                <div class="suggestion-footer">
+                    <span>↑ ↓ Navigate</span>
+                    <span>↵ Select</span>
+                    <span>ESC Close</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="search-hint">
+            <span>⌕</span>
+            <span>Search your knowledge library</span>
+        </div>
+
+    </section>
+
+    <!-- Library Table -->
+    <section
+            id="libraryTableSection"
+            class="library-table-section"
+            hidden
+    >
+
+        <div class="table-header">
+            <div>
+                <h2>All Library Items</h2>
+                <p>Browse and view your saved snippets.</p>
+            </div>
+
+            <span id="libraryCount" class="library-count"></span>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="library-table">
+
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Updated At</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+
+                <tbody id="libraryTableBody"></tbody>
+
+            </table>
+        </div>
+
+    </section>
+
+    <!--    <footer>-->
+    <!--        <p>Local Library &copy; 2026</p>-->
+    <!--    </footer>-->
+
+</main>
+
+<!-- =========================
+     LIBRARY DETAIL MODAL
+========================= -->
+<div th:replace="~{fragments/item_detail :: detailModal}"></div>
+
+
+<!-- =========================
+     CREATE / UPDATE MODAL
+========================= -->
+<div id="saveModal" class="save-modal" aria-hidden="true">
+    <div class="save-modal-content">
+
+        <!-- Header -->
+        <div class="save-modal-header">
+            <div>
+                <h2 id="saveModalTitle">Create New Item</h2>
+                <p class="modal-subtitle">Add a new item to your developer library</p>
+            </div>
+
+            <button
+                    type="button"
+                    id="closeSaveModal"
+                    class="modal-close-button"
+                    aria-label="Close modal">
+                &times;
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form id="libraryForm">
+
+            <input type="hidden" id="formItemId">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="formTitle">Title <span>*</span></label>
+                    <input
+                            type="text"
+                            id="formTitle"
+                            placeholder="e.g. PostgreSQL Insert Query"
+                            required>
+                </div>
+
+                <div class="form-group">
+                    <label for="formCategory">Category <span>*</span></label>
+                    <input
+                            type="text"
+                            id="formCategory"
+                            placeholder="e.g. SQL, Java, Spring Boot"
+                            required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="formDescription">Description</label>
+                    <textarea
+                            id="formDescription"
+                            rows="2"
+                            placeholder="Briefly describe what this item does..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="formAlias">Aliases</label>
+                    <input
+                            type="text"
+                            id="formAlias"
+                            placeholder="alias1, alias2">
+                    <small>Separate multiple aliases with commas.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="formTags">Tags</label>
+                    <input
+                            type="text"
+                            id="formTags"
+                            placeholder="postgresql, query, insert">
+                    <small>Separate multiple tags with commas.</small>
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="content-label">
+                        <label for="formContent">Content <span>*</span></label>
+                        <span class="editor-hint">Code / SQL / Notes</span>
+                    </div>
+
+                    <textarea
+                            id="formContent"
+                            class="content-editor"
+                            rows="12"
+                            placeholder="Enter your code, SQL query, or notes here..."
+                            required></textarea>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="save-modal-footer">
+                <button
+                        type="button"
+                        id="cancelSaveButton"
+                        class="btn-cancel">
+                    Cancel
+                </button>
+
+                <button
+                        type="submit"
+                        id="submitSaveButton"
+                        class="btn-save">
+                    <span>Save Item</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<!-- =========================
+     THYMELEAF DATA
+========================= -->
+<script th:inline="javascript">
+    const libraryItems = /*[[${items}]]*/ [];
+</script>
+
+<!-- JavaScript -->
+<script th:src="@{/js/dev_dashboard.js}"></script>
+
+</body>
+</html>

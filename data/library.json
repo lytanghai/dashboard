@@ -1,0 +1,21 @@
+[ {
+  "alias" : [ "junior account" ],
+  "category" : "EDB SQL",
+  "content" : "select a.* from dgtlcore_app.fc_account_data a\nwhere a.customer_account_type = 'JUNIOR'\nand not exists (select 1 from dgtlcore_app.wcx_registration_referral r where r.khr_account_no = a.account_no or r.usd_account_no = a.account_no);",
+  "createdAt" : "2026-11-04T16:16:59.0172071",
+  "description" : "des",
+  "id" : "4d12f8db-709c-48e9-a4d5-24d9261dc105",
+  "tags" : [ "query", "junior" ],
+  "title" : "find missing junior account on fc_account_data",
+  "updatedAt" : "2026-11-04T16:24:01.3718416"
+}, {
+  "alias" : [ ],
+  "category" : "gradle",
+  "content" : "./gradlew :mlops-dispatcher:bootRun --args=\"SPRING_CLOUD_VAULT_KUBERNETES_SERVICE_ACCOUNT_TOKEN_FILE=D:\\jwt\\mlops-dispatcher.txt\"",
+  "createdAt" : "2026-11-06T13:36:32.1835172",
+  "description" : "How to run app with local vault token",
+  "id" : "c3e649fa-6334-4859-8a75-4750561af203",
+  "tags" : [ "vault", "gradle" ],
+  "title" : "How to run app with local vault token",
+  "updatedAt" : "2026-11-06T13:36:32.1835172"
+} ]

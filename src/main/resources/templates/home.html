@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Project Hub</title>
+
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">W</div>
+            <span>Dashboard</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-link active">
+                <span>⌂</span> Home
+            </a>
+            <a href="#projects" class="nav-link">
+                <span>▦</span> Projects
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="status-dot"></span>
+            Personal Dashboard
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div class="breadcrumb">Dashboard / <strong>Home</strong></div>
+
+            <button type="button" id="themeToggle" class="theme-toggle"
+                    aria-label="Toggle theme">
+                ☾
+            </button>
+        </header>
+
+        <section class="welcome-section">
+            <div>
+                <span class="eyebrow">Dashboard</span>
+                <h1>Welcome to your workspace.</h1>
+                <p>Everything you build, organized in one place.</p>
+            </div>
+            <div class="welcome-decoration">✦</div>
+        </section>
+
+        <section class="projects-section" id="projects">
+
+            <div class="section-heading">
+                <div>
+                    <h2>My Projects</h2>
+                    <p>Choose a project to continue working.</p>
+                </div>
+
+                <div class="project-search">
+                    <span>⌕</span>
+                    <input type="text" id="projectSearch"
+                           placeholder="Search projects...">
+                </div>
+            </div>
+
+            <div class="project-grid" id="projectGrid">
+
+                <!-- Local note -->
+                <a href="/dev_dashboard" class="project-card"
+                   target="_blank"
+                   data-name="dev_dashboard"
+                   data-description="Manage your local tools and resources">
+
+                    <div class="card-top">
+                        <div class="project-icon purple">▦</div>
+                        <span class="project-status active">Active</span>
+                    </div>
+
+                    <h3>Local Dashboard</h3>
+                    <p>Manage your local tools, SQL library, and useful resources.</p>
+
+                    <div class="card-bottom">
+                        <span>Open project</span>
+                        <span class="arrow">↗</span>
+                    </div>
+                </a>
+
+                <!-- Schedule -->
+                <a href="/live_event" class="project-card"
+                   target="_blank"
+                   data-name="schedule"
+                   data-description="Manage your schedule and events ahead">
+
+                    <div class="card-top">
+                        <div class="project-icon green">⌚</div>
+                        <span class="project-status active">Active</span>
+                    </div>
+
+                    <h3>Schedule</h3>
+                    <p>Schedule</p>
+
+                    <div class="card-bottom">
+                        <span>Open project</span>
+                        <span class="arrow">↗</span>
+                    </div>
+                </a>
+
+                <a href="/finance/home" class="project-card"
+                   target="_blank"
+                   data-name="finance"
+                   data-description="Manage your schedule and events ahead">
+
+                    <div class="card-top">
+                        <div class="project-icon green">$</div>
+                        <span class="project-status active">Active</span>
+                    </div>
+
+                    <h3>Finance</h3>
+                    <p>Manage your financial</p>
+
+                    <div class="card-bottom">
+                        <span>Open project</span>
+                        <span class="arrow">↗</span>
+                    </div>
+                </a>
+
+                <a href="/osc/home" class="project-card"
+                   target="_blank"
+                   data-name="saving_tracker"
+                   data-description="One Step Closer to your plan">
+
+                    <div class="card-top">
+                        <div class="project-icon green">🎯</div>
+                        <span class="project-status active">Active</span>
+                    </div>
+
+                    <h3>Saving Tracker</h3>
+                    <p>Make your dreams happen</p>
+
+                    <div class="card-bottom">
+                        <span>Open project</span>
+                        <span class="arrow">↗</span>
+                    </div>
+                </a>
+
+
+            </div>
+
+            <div id="emptyState" class="empty-state" hidden>
+                <div>⌕</div>
+                <h3>No projects found</h3>
+                <p>Try searching with another project name.</p>
+            </div>
+
+        </section>
+
+        <footer class="page-footer">
+            <span>My Workspace</span>
+            <span>Personal Project Hub</span>
+        </footer>
+
+    </main>
+</div>
+
+<script th:src="@{/js/home.js}"></script>
+</body>
+</html>

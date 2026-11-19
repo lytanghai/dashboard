@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="detailModal"
+     id="detailModal"
+     class="detail-modal">
+
+    <div class="detail-modal-content">
+
+        <!-- Header -->
+        <div class="detail-header">
+
+            <div>
+                <span class="detail-label">LIBRARY ITEM</span>
+                <h2 id="detailTitle">Item Title</h2>
+            </div>
+
+            <button
+                    type="button"
+                    id="closeDetailModal"
+                    class="close-modal"
+                    aria-label="Close">
+                &times;
+            </button>
+
+        </div>
+
+        <!-- Body -->
+        <div class="detail-body">
+
+            <div class="detail-meta-grid">
+
+                <div class="detail-field">
+                    <label>ID</label>
+                    <p id="detailId"></p>
+                </div>
+
+                <div class="detail-field">
+                    <label>Category</label>
+                    <p>
+                        <span id="detailCategory"
+                              class="detail-category"></span>
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Alias -->
+            <div class="detail-field">
+                <label>Aliases</label>
+                <div id="detailAliases" class="detail-chip-list"></div>
+            </div>
+
+            <!-- Description -->
+            <div class="detail-field">
+                <label>Description</label>
+                <p id="detailDescription"
+                   class="detail-description"></p>
+            </div>
+
+            <!-- Tags -->
+            <div class="detail-field">
+                <label>Tags</label>
+                <div id="detailTags" class="detail-chip-list"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="detail-field">
+
+                <div class="content-header">
+                    <label>Content</label>
+
+                    <button
+                            type="button"
+                            id="copyContentButton"
+                            class="copy-content-button">
+                        Copy content
+                    </button>
+                </div>
+
+                <pre class="detail-code">
+                    <code id="detailContent"></code>
+                </pre>
+
+            </div>
+
+            <!-- Dates -->
+            <div class="detail-meta-grid">
+
+                <div class="detail-field">
+                    <label>Created At</label>
+                    <p id="detailCreatedAt"></p>
+                </div>
+
+                <div class="detail-field">
+                    <label>Updated At</label>
+                    <p id="detailUpdatedAt"></p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="detail-footer">
+
+            <span id="detailFooterId"></span>
+
+            <button
+                    type="button"
+                    id="closeDetailFooter"
+                    class="close-detail-button">
+                Close
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

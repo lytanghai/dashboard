@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Finance Dashboard</title>
+
+    <link rel="stylesheet" th:href="@{/css/finance.css}">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">F</div>
+            <div>
+                <h2>Finance</h2>
+                <span>Personal dashboard</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/finance/home" class="nav-item active">
+                <span>▦</span>
+                Dashboard
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-note">
+                <span class="status-dot"></span>
+                <span>Local CSV storage</span>
+            </div>
+        </div>
+    </aside>
+
+
+    <!-- Main content -->
+    <main class="main-content">
+
+        <!-- Top bar -->
+        <header class="topbar">
+            <div>
+                <div class="breadcrumb">Workspace / Dashboard</div>
+                <h1>Finance Overview</h1>
+                <p class="page-subtitle">
+                    Track your income and expenses in one place.
+                </p>
+            </div>
+
+            <div class="topbar-actions">
+                <button type="button"
+                        id="themeToggle"
+                        class="theme-toggle">
+                    <span id="themeIcon">🌙</span>
+                    <span id="themeLabel">Dark mode</span>
+                </button>
+            </div>
+        </header>
+
+
+        <!-- Month selector -->
+        <section class="toolbar">
+            <div class="month-control">
+                <label for="monthSelector">Monthly history</label>
+
+                <input type="month"
+                       id="monthSelector"
+                       th:value="${currentMonthValue}">
+            </div>
+
+            <button type="button"
+                    id="createTransactionButton"
+                    class="primary-button">
+                <span class="button-plus">+</span>
+                New Transaction
+            </button>
+        </section>
+
+
+        <!-- Summary cards -->
+        <section class="summary-grid">
+
+            <article class="summary-card credit-card">
+                <div class="summary-card-top">
+                    <div>
+                        <span class="summary-label">Total Credit</span>
+                        <h2>Income</h2>
+                    </div>
+                    <div class="summary-icon">↗</div>
+                </div>
+
+                <div id="creditBreakdown" class="currency-breakdown">
+                    <span class="summary-empty">No income yet</span>
+                </div>
+            </article>
+
+
+            <article class="summary-card debit-card">
+                <div class="summary-card-top">
+                    <div>
+                        <span class="summary-label">Total Debit</span>
+                        <h2>Expenses</h2>
+                    </div>
+                    <div class="summary-icon">↘</div>
+                </div>
+
+                <div id="debitBreakdown" class="currency-breakdown">
+                    <span class="summary-empty">No expenses yet</span>
+                </div>
+            </article>
+
+
+            <article class="summary-card">
+                <div class="summary-card-top">
+                    <div>
+                        <span class="summary-label">Transactions</span>
+                        <h2>Activity</h2>
+                    </div>
+                    <div class="summary-icon neutral-icon">#</div>
+                </div>
+
+                <div class="summary-main-value" id="totalTransactions">0</div>
+                <span class="summary-description">Total records this month</span>
+            </article>
+
+
+            <article class="summary-card">
+                <div class="summary-card-top">
+                    <div>
+                        <span class="summary-label">Currencies</span>
+                        <h2>Accounts</h2>
+                    </div>
+                    <div class="summary-icon neutral-icon">$</div>
+                </div>
+
+                <div class="summary-main-value" id="totalCurrencies">0</div>
+                <span class="summary-description">Currencies used this month</span>
+            </article>
+
+        </section>
+
+
+        <!-- Transactions -->
+        <section class="transaction-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Transactions</h2>
+                    <p>View and manage your financial records.</p>
+                </div>
+
+                <span id="selectedMonthLabel" class="month-label"></span>
+            </div>
+
+
+            <!-- Filters -->
+            <div class="filter-toolbar">
+
+                <div class="search-wrapper">
+                    <span class="search-icon">⌕</span>
+
+                    <input type="search"
+                           id="searchInput"
+                           placeholder="Search category or remark...">
+                </div>
+
+
+                <select id="typeFilter" aria-label="Filter by type">
+                    <option value="">All Types</option>
+                    <option value="C">Credit</option>
+                    <option value="D">Debit</option>
+                </select>
+
+
+                <select id="currencyFilter" aria-label="Filter by currency">
+                    <option value="">All Currencies</option>
+                    <option value="USD">USD</option>
+                    <option value="KHR">KHR</option>
+                </select>
+
+
+                <button type="button"
+                        id="clearFilters"
+                        class="clear-filter-button">
+                    Clear filters
+                </button>
+
+            </div>
+
+
+            <!-- Table -->
+            <div class="table-container">
+
+                <table class="transaction-table">
+
+                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Remark</th>
+                        <th class="text-right">Amount</th>
+                        <th>Currency</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="transactionTable">
+
+                    <tr th:each="record : ${financeResponse.records}"
+                        th:data-no="${record.no}"
+                        th:data-category="${record.category}"
+                        th:data-type="${record.type}"
+                        th:data-amount="${record.amount}"
+                        th:data-currency="${record.currency}"
+                        th:data-remark="${record.remark}"
+                        th:data-date="${record.date}">
+
+                        <td th:text="${record.no}">1</td>
+                        <td th:text="${record.date}">2026-11-20</td>
+                        <td>
+                            <span class="category-label"
+                                  th:text="${record.category}">
+                                UTILITIES
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="type-badge"
+                                  th:classappend="${record.type.name() == 'C'} ? ' credit' : ' debit'"
+                                  th:text="${record.type.name() == 'C'} ? 'Credit' : 'Debit'">
+                                Debit
+                            </span>
+                        </td>
+
+                        <td class="remark-cell"
+                            th:text="${record.remark != null and !record.remark.isBlank() ? record.remark : '-'}">
+                            Remark
+                        </td>
+
+                        <td class="amount-cell text-right"
+                            th:text="${record.amount}">
+                            100.00
+                        </td>
+
+                        <td>
+                            <span class="currency-label"
+                                  th:text="${record.currency}">
+                                USD
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="action-buttons">
+                                <button type="button" class="edit-button">
+                                    Edit
+                                </button>
+
+                                <button type="button" class="delete-button">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(financeResponse.records)}"
+                        class="empty-row">
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">↗</div>
+                                <h3>No transactions found</h3>
+                                <p>Add your first transaction to get started.</p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="table-footer">
+                <span id="tableRecordCount">0 transactions</span>
+                <span>Amounts are displayed in their original currencies.</span>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+
+<!-- Create / Update Modal -->
+<div id="transactionModal"
+     class="modal"
+     aria-hidden="true">
+
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+
+    <div class="modal-dialog">
+
+        <div class="modal-header">
+            <div>
+                <span class="modal-eyebrow">FINANCE MANAGEMENT</span>
+                <h2 id="modalTitle">Create Transaction</h2>
+                <p id="modalSubtitle">Add a new financial record.</p>
+            </div>
+
+            <button type="button"
+                    id="closeTransactionModal"
+                    class="modal-close"
+                    aria-label="Close">
+                &times;
+            </button>
+        </div>
+
+
+        <form id="transactionForm">
+
+            <input type="hidden" id="transactionNo">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="transactionDate">Transaction Date</label>
+
+                    <input type="date"
+                           id="transactionDate"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="transactionCategory">Category <span>*</span></label>
+
+                    <select id="transactionCategory" required>
+                        <option value="">Select category</option>
+
+                        <option th:each="category : ${categories}"
+                                th:value="${category.name()}"
+                                th:text="${category.name()}">
+                        </option>
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="transactionType">Type <span>*</span></label>
+
+                    <select id="transactionType" required>
+                        <option value="">Select type</option>
+
+                        <option th:each="type : ${types}"
+                                th:value="${type.name()}"
+                                th:text="${type.name() == 'C' ? 'Credit' : 'Debit'}">
+                        </option>
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="transactionAmount">Amount <span>*</span></label>
+
+                    <input type="number"
+                           id="transactionAmount"
+                           min="0.01"
+                           step="0.01"
+                           placeholder="0.00"
+                           required>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="transactionCurrency">Currency <span>*</span></label>
+
+                    <select id="transactionCurrency" required>
+                        <option value="">Select currency</option>
+
+                        <option th:each="currency : ${currencies}"
+                                th:value="${currency.name()}"
+                                th:text="${currency.name()}">
+                        </option>
+                    </select>
+                </div>
+
+
+                <div class="form-group full-width">
+                    <label for="transactionRemark">Remark</label>
+
+                    <textarea id="transactionRemark"
+                              rows="3"
+                              maxlength="500"
+                              placeholder="Enter transaction details..."></textarea>
+                </div>
+
+            </div>
+
+
+            <div id="formError" class="form-error" hidden></div>
+
+
+            <div class="modal-footer">
+                <button type="button"
+                        id="cancelTransaction"
+                        class="secondary-button">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        id="saveTransaction"
+                        class="primary-button">
+                    Save Transaction
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal"
+     class="modal"
+     aria-hidden="true">
+
+    <div class="modal-backdrop" id="deleteBackdrop"></div>
+
+    <div class="modal-dialog delete-dialog">
+
+        <div class="delete-icon">!</div>
+
+        <h2>Delete Transaction?</h2>
+
+        <p>
+            Are you sure you want to delete transaction
+            &nbsp;<strong id="deleteRecordNo"></strong>&nbsp;?
+            This action cannot be undone.
+        </p>
+
+        <div id="deleteError" class="form-error" hidden></div>
+
+        <div class="modal-footer">
+            <button type="button"
+                    id="cancelDelete"
+                    class="secondary-button">
+                Cancel
+            </button>
+
+            <button type="button"
+                    id="confirmDelete"
+                    class="danger-button">
+                Delete Transaction
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+<script th:src="@{/js/finance.js}"></script>
+
+</body>
+</html>
