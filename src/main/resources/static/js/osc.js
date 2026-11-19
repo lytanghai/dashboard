@@ -5,7 +5,8 @@
 const API = {
     CREATE: "/osc/create",
     DEPOSIT: "/osc/deposit",
-    GET: "/osc/get"
+    GET: "/osc/get",
+    CANCEL: "/osc/cancel",
 };
 
 const PAGE_SIZE = 9;
@@ -251,6 +252,15 @@ function createGoalCard(goal) {
                 ${status === "COMPLETED" ? "Goal Achieved" : "Unavailable"}
             </button>
           `;
+    const cancelButton = status === "IN_PROGRESS"
+        ? `
+        <button
+                class="btn btn-primary"
+                onclick="openCancelModal(${Number(goal.id)})">
+                - Delete
+            </button>
+      `
+        : "";
 
     return `
         <article class="goal-card">
@@ -296,6 +306,7 @@ function createGoalCard(goal) {
 
                 <div class="goal-actions">
                     ${depositButton}
+                    ${cancelButton}
                 </div>
 
             </div>
@@ -587,6 +598,54 @@ async function submitDeposit(event) {
     } finally {
         button.disabled = false;
         button.textContent = "Confirm Deposit";
+    }
+}
+// CANCEL MODEL
+function openCancelModal(goalId) {
+    const goal = findGoalById(goalId);
+
+    if (!goal || goal.status !== "IN_PROGRESS") {
+        showToast("Only active goals can be cancelled.", "error");
+        return;
+    }
+
+    document.getElementById("cancelGoalId").value = goalId;
+    document.getElementById("cancelGoalTitle").textContent = goal.title;
+
+    document.getElementById("cancelModal").classList.remove("hidden");
+}
+
+function closeCancelModal() {
+    document.getElementById("cancelModal").classList.add("hidden");
+}
+
+async function confirmCancelGoal() {
+    const goalId = document.getElementById("cancelGoalId").value;
+    const button = document.getElementById("confirmCancelButton");
+
+    if (!goalId) {
+        showToast("Invalid goal.", "error");
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Cancelling...";
+    await apiRequest(`${API.CANCEL}/${goalId}`, {});
+    try {
+        const response = await apiRequest(`${API.CANCEL}/${goalId}`, {});
+
+        if (response.response === "SUCCESS") {
+            closeCancelModal();
+            showToast("Goal cancelled successfully.", "success");
+            await loadGoals();
+        } else {
+            showToast("Failed to cancel goal.", "error");
+        }
+    } catch (error) {
+        showToast(error.message || "Failed to cancel goal.", "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Cancel Goal";
     }
 }
 

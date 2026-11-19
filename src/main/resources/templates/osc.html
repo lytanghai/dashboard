@@ -104,7 +104,7 @@
 
             <select id="statusFilter" class="filter-select">
                 <option value="">All Status</option>
-                <option value="IN_PROGRESS">In Progress</option>
+                <option value="IN_PROGRESS" selected>In Progress</option>
                 <option value="COMPLETED">Completed</option>
                 <option value="CANCELLED">Cancelled</option>
             </select>
@@ -315,6 +315,49 @@
             </div>
 
         </form>
+
+    </div>
+</div>
+
+<!-- ======================================
+     CANCEL GOAL MODAL
+====================================== -->
+<div class="modal-overlay hidden" id="cancelModal">
+    <div class="modal">
+
+        <div class="modal-header">
+            <div>
+                <p class="modal-eyebrow">CANCEL SAVINGS GOAL</p>
+                <h2>Cancel this goal?</h2>
+                <p id="cancelGoalTitle">Goal</p>
+            </div>
+
+            <button class="modal-close" onclick="closeCancelModal()">
+                &times;
+            </button>
+        </div>
+
+        <input type="hidden" id="cancelGoalId">
+
+        <p>
+            Are you sure you want to cancel this goal?
+            This action cannot be undone.
+        </p>
+
+        <div class="modal-actions">
+            <button type="button"
+                    class="btn btn-secondary"
+                    onclick="closeCancelModal()">
+                Keep Goal
+            </button>
+
+            <button type="button"
+                    class="btn btn-danger"
+                    id="confirmCancelButton"
+                    onclick="confirmCancelGoal()">
+                Cancel Goal
+            </button>
+        </div>
 
     </div>
 </div>

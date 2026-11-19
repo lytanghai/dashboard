@@ -101,11 +101,21 @@ public class OneStepCloserService {
         newEntity.setTargetAmount(request.getTargetAmount());
         newEntity.setStatus(request.getStatus());
         newEntity.setDescription(Objects.isNull(request.getDescription()) ? "" : request.getDescription());
-        newEntity.setImageUrl(Objects.isNull(request.getImageUrl()) ? "" : request.getImageUrl());
+        newEntity.setImageUrl(Objects.isNull(request.getImageUrl()) ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPjFV825Vu-QCk7aaHNvB2sGhcj7038ToReMAvscJsS5Y74TEGYjPshGPs&s=10" : request.getImageUrl());
         newEntity.setCreatedDate(request.getCreatedDate());
 
         oneStepCloserRepository.save(newEntity);
 
+    }
+
+    public void cancelOsc(Long oscId) {
+        OneStepCloserEntity oscEntity = oneStepCloserRepository.findById(oscId).orElse(null);
+        if(oscEntity != null) {
+            oscEntity.setStatus(Status.CANCELLED.name());
+            oneStepCloserRepository.save(oscEntity);
+        } else {
+            throw new SystemException("Record not found");
+        }
     }
 
     public OscDepositResponse deposit(OSCDepositRequest request) {
