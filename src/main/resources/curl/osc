@@ -1,0 +1,38 @@
+curl --request POST \
+  --url http://localhost:8080/osc/create \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/10.1.1' \
+  --data '	{
+		"title": "Buy Crimesom",
+		"description":"Buy at steam",
+		"targetAmount": 20.50,
+		"image_url":"n/a"
+	}'
+
+
+
+curl --request POST \
+  --url http://localhost:8080/osc/deposit \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/10.1.1' \
+  --data '{
+	"oscId": 2,
+	"currency": "USD",
+	"amount": 20
+}'
+
+
+
+curl --request POST \
+  --url http://localhost:8080/osc/get \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/10.1.1' \
+  --data '{
+	"status": "IN_PROGRESS",
+	"title": null,
+	"description": null,
+	"sortBy": "createdDate",
+	"sortDirection": "DESC",
+	"page": 0,
+	"size": 10
+}'
